@@ -1,5 +1,5 @@
 from src.api.hh_api import HHapi
-from src.models.vacancy import Vacancy
+from src.models.vacancy_saver import JSONSaver
 from src.utils.helpers import print_vacancies
 from src.utils.helpers import filter_vacancies, sort_vacancies, get_top_vacancies
 
@@ -19,11 +19,13 @@ def user_interaction():
     # Создание экземпляра API и получение вакансий по поисковому запросу
     hh_api = HHapi()
     hh_vacancies = hh_api.get_vacancies(search_query)
-
+    saver = JSONSaver()
+    saver.add_vacancy(hh_vacancies)
     print("Ответ API:", hh_vacancies)
 
-    if hh_vacancies and 'items' in hh_vacancies:
+    if hh_vacancies:
         vacancies_list = []
+        '''
         for vacancy_info in hh_vacancies['items']:
             # Обработка полученной информации и формирование списка вакансий
             if isinstance(vacancy_info, dict):
@@ -36,8 +38,12 @@ def user_interaction():
             elif isinstance(vacancy_info, Vacancy):
                 # Включение в список вакансий экземпляров класса Vacancy
                 vacancies_list.append(vacancy_info)
-
+        '''
+        for vac in hh_vacancies:
+            print(vac.__dict__)
+            vacancies_list.append(vac.__dict__)
         # Фильтрация, сортировка и выбор топ N вакансий
+        print(vacancies_list)
         filtered_vacancies = filter_vacancies(vacancies_list, filter_words)
         sorted_vacancies = sort_vacancies(filtered_vacancies)
         top_vacancies = get_top_vacancies(sorted_vacancies, top_n)

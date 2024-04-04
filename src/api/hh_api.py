@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from src.models.vacancy import Vacancy
+
 import requests
 
 
@@ -45,5 +47,12 @@ class HHapi(Api):
             dict: Ответ от API HH.ru в формате JSON с данными о вакансиях.
         """
         settings = {"text": search_query, "area": 1}  # 1 - код региона (Москва)
-        response = requests.get(self.base_url, params=settings)
-        return response.json()
+        response = requests.get(self.base_url, params=settings).json()['items']
+        vacancy_list = []
+        for vacancy_info in response:
+            name = vacancy_info.get('name', 'Не указано')
+            alternate_url = vacancy_info.get('alternate_url', 'Не указано')
+            salary_info = vacancy_info.get('salary')
+            description = vacancy_info.get('description', 'Описание отсутствует')
+            vacancy_list.append(Vacancy(name, alternate_url, salary_info, description))
+        return vacancy_list

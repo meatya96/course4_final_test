@@ -55,7 +55,7 @@ class JSONSaver(VacancySaver):
         """
         self.file_path = file_path
 
-    def add_vacancy(self, vacancy):
+    def add_vacancy(self, vacancies):
         """
         Добавляет вакансию в файл JSON.
 
@@ -63,5 +63,12 @@ class JSONSaver(VacancySaver):
             vacancy: Объект вакансии для добавления.
         """
         with open(self.file_path, 'a') as file:
-            json.dump(vars(vacancy), file)
-            file.write('\n')
+            for vacancy in vacancies:
+                json.dump(vacancy.to_json(), file)
+                file.write('\n')
+
+    def delete_vacancy(self, vacancy):
+        pass
+
+    def get_vacancies_by_criteria(self, criteria):
+        pass
